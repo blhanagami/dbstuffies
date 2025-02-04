@@ -39,7 +39,7 @@ export default function HomePage() {
     }
 
     try {
-      const response = await fetch("/api/upload-text", {
+      const response = await fetch("/api/upload-stuff", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",  // Sending form-encoded data

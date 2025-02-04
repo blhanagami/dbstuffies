@@ -18,8 +18,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       req.on("end", () => {
         try {
           resolve(parse(body) as { content: string });
-        } catch (new Error("This did not work")) {
-          reject(new Error("This did not work lmao"));
+        } catch (error) {
+          reject(error);
         }
       });
     });
@@ -43,3 +43,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).json({ error: "Method Not Allowed" });
   }
 }
+
+// This should be up to date now
