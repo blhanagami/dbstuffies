@@ -1,10 +1,5 @@
 "use client";
 
-import { actionAsyncStorageInstance } from "next/dist/server/app-render/action-async-storage-instance";
-import Link from "next/link";
-import { db } from "~/server/db"
-
-
 
 /*export default async function HomePage() {
 
@@ -23,6 +18,11 @@ import { db } from "~/server/db"
 }*/
 
 import { useState, ChangeEvent } from "react";
+
+type ReturnData = {
+  message: string;
+  error?: string;
+}
 
 export default function HomePage() {
   const [text, setText] = useState<string>("");
@@ -44,12 +44,12 @@ export default function HomePage() {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",  // Sending form-encoded data
         },
-        body: new URLSearchParams({
+        body: JSON.stringify({
           content: text,  // Text content sent via form URL encoding
-        }).toString(),
+        }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as ReturnData;
 
       if (response.ok) {
         alert(data.message);  // Success
@@ -80,3 +80,18 @@ export default function HomePage() {
     </main>
   );
 }
+/*export default async function HomePage() {
+
+  const posts = await db.query.posts.findMany();
+
+  return (
+    <main>
+      <div>
+        {posts.map((post) => (
+          <div key = {post.id}>{post.name}</div>))}
+          </div>
+          <input type="text" placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+  <button className="btn btn-primary">Primary</button>
+  </main>
+  );
+}*/
