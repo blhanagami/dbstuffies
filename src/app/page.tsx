@@ -1,23 +1,90 @@
 "use client";
 
+import { useState, ChangeEvent } from "react";
 
-/*export default async function HomePage() {
+type ReturnData = {
+  message: string;
+  error?: string;
+};
 
-  const posts = await db.query.posts.findMany();
+export default function HomePage() {
+  const [text, setText] = useState<string>(""); // To track the input text
+  const [loading, setLoading] = useState<boolean>(false); // To handle loading state
+  const [error, setError] = useState<string | null>(null); // To show any error messages
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // To show success message
+
+  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
+  const handleButtonClick = async () => {
+    if (text.trim() === "") {
+      alert("Please enter some text.");
+      return;
+    }
+
+    setLoading(true); // Start loading
+
+    try {
+      const response = await fetch("/api/upload-stuff", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",  // Use JSON for request body
+        },
+        body: JSON.stringify({
+          content: text,
+        }),
+      });
+
+      const data = await response.json() as ReturnData;
+
+      if (response.ok) {
+        setSuccessMessage(data.message); // Show success message
+        setText(""); // Clear input
+        setError(null); // Reset error state
+      } else {
+        setError(data.error || "An unknown error occurred");
+      }
+    } catch (error) {
+      console.error("Error uploading text:", error);
+      setError("An error occurred while uploading the text.");
+    } finally {
+      setLoading(false); // End loading state
+    }
+  };
 
   return (
-    <main>
-      <div>
-        {posts.map((post) => (
-          <div key = {post.id}>{post.name}</div>))}
-          </div>
-          <input type="text" placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-  <button className="btn btn-primary">Primary</button>
-  </main>
-  );
-}*/
+    <main className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-semibold text-center mb-4">Upload Text</h1>
+        
+        {/* Display any error message */}
+        {error && <div className="alert alert-error mb-4"><span>{error}</span></div>}
 
-import { useState, ChangeEvent } from "react";
+        {/* Display success message */}
+        {successMessage && <div className="alert alert-success mb-4"><span>{successMessage}</span></div>}
+
+        <input
+          type="text"
+          value={text}
+          onChange={handleTextChange}
+          placeholder="Enter text here"
+          className="input input-bordered w-full mb-4"
+        />
+
+        <button 
+          onClick={handleButtonClick}
+          className="btn btn-primary w-full"
+          disabled={loading} // Disable button during loading
+        >
+          {loading ? "Uploading..." : "Upload Text"}
+        </button>
+      </div>
+    </main>
+  );
+}
+
+/*import { useState, ChangeEvent } from "react";
 
 type ReturnData = {
   message: string;
@@ -80,18 +147,4 @@ export default function HomePage() {
     </main>
   );
 }
-/*export default async function HomePage() {
-
-  const posts = await db.query.posts.findMany();
-
-  return (
-    <main>
-      <div>
-        {posts.map((post) => (
-          <div key = {post.id}>{post.name}</div>))}
-          </div>
-          <input type="text" placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-  <button className="btn btn-primary">Primary</button>
-  </main>
-  );
-}*/
+*/
