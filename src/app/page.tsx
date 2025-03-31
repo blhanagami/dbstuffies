@@ -1,150 +1,55 @@
+// pages/index.tsx
+
 "use client";
 
-import { useState, ChangeEvent } from "react";
+import { useState, useEffect } from 'react';
 
-type ReturnData = {
-  message: string;
-  error?: string;
-};
+export default function Home() {
+  // Initialize state for the fields
+  const [fields, setFields] = useState([{ fieldName: 'Field 1', value: '' }]);
+  const [isClient, setIsClient] = useState(false); // To check if we are on the client side
 
-export default function HomePage() {
-  const [text, setText] = useState<string>(""); // To track the input text
-  const [loading, setLoading] = useState<boolean>(false); // To handle loading state
-  const [error, setError] = useState<string | null>(null); // To show any error messages
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // To show success message
+  // Set isClient to true after the component has mounted on the client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+  // Handle adding a new field to the form
+  const handleAddField = () => {
+    setFields([...fields, { fieldName: `Field ${fields.length + 1}`, value: '' }]);
   };
 
-  const handleButtonClick = async () => {
-    if (text.trim() === "") {
-      alert("Please enter some text.");
-      return;
-    }
-
-    setLoading(true); // Start loading
-
-    try {
-      const response = await fetch("/api/upload-stuff", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",  // Use JSON for request body
-        },
-        body: JSON.stringify({
-          content: text,
-        }),
-      });
-
-      const data = await response.json() as ReturnData;
-
-      if (response.ok) {
-        setSuccessMessage(data.message); // Show success message
-        setText(""); // Clear input
-        setError(null); // Reset error state
-      } else {
-        setError(data.error || "An unknown error occurred");
-      }
-    } catch (error) {
-      console.error("Error uploading text:", error);
-      setError("An error occurred while uploading the text.");
-    } finally {
-      setLoading(false); // End loading state
-    }
+  // Handle changes in the input fields
+  const handleInputChange = (index: number, newValue: string) => {
+    setFields(fields.map((field, i) => 
+      i === index ? { ...field, value: newValue } : field
+    ));
   };
+
+  // If we're on the client, render the form
+  if (!isClient) {
+    // Return null or a placeholder while the component is being mounted on the client
+    return <div>Loading...</div>;
+  }
 
   return (
-    <main className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-center mb-4">Upload Text</h1>
-        
-        {/* Display any error message */}
-        {error && <div className="alert alert-error mb-4"><span>{error}</span></div>}
-
-        {/* Display success message */}
-        {successMessage && <div className="alert alert-success mb-4"><span>{successMessage}</span></div>}
-
-        <input
-          type="text"
-          value={text}
-          onChange={handleTextChange}
-          placeholder="Enter text here"
-          className="input input-bordered w-full mb-4"
-        />
-
-        <button 
-          onClick={handleButtonClick}
-          className="btn btn-primary w-full"
-          disabled={loading} // Disable button during loading
-        >
-          {loading ? "Uploading..." : "Upload Text"}
+    <div>
+      <h1>Upload Text Fields</h1>
+      <form>
+        {fields.map((field, index) => (
+          <div key={index}>
+            <label>{field.fieldName}</label>
+            <textarea
+              value={field.value}
+              onChange={(e) => handleInputChange(index, e.target.value)}
+            />
+          </div>
+        ))}
+        <button type="button" onClick={handleAddField}>
+          Add More Fields
         </button>
-      </div>
-    </main>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   );
 }
-
-/*import { useState, ChangeEvent } from "react";
-
-type ReturnData = {
-  message: string;
-  error?: string;
-}
-
-export default function HomePage() {
-  const [text, setText] = useState<string>("");
-
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-
-  };
-
-  const handleButtonClick = async () => {
-    if (text.trim() === "") {
-      alert("Please enter some text.");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/upload-stuff", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",  // Sending form-encoded data
-        },
-        body: JSON.stringify({
-          content: text,  // Text content sent via form URL encoding
-        }),
-      });
-
-      const data = await response.json() as ReturnData;
-
-      if (response.ok) {
-        alert(data.message);  // Success
-        setText("");  // Clear the input field after success
-      } else {
-        alert("Error: " + data.error);
-      }
-    } catch (error) {
-      console.error("Error uploading text:", error);
-      alert("An error occurred while uploading the text.");
-    }
-  };
-
-  return (
-    <main>
-      <div>
-        <input
-          type="text"
-          value={text}
-          onChange={handleTextChange}
-          placeholder="Type here"
-          className="input input-bordered w-full max-w-xs"
-        />
-        <button onClick={handleButtonClick} className="btn btn-primary">
-          Upload Text
-        </button>
-      </div>
-    </main>
-  );
-}
-*/

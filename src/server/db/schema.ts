@@ -6,8 +6,11 @@ import {
   index,
   integer,
   pgTableCreator,
+  pgTable,
+  text,
   timestamp,
   varchar,
+  serial,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -34,3 +37,24 @@ export const posts = createTable(
     nameIndex: index("name_idx").on(example.content),
   })
 );
+
+/*export const textSchema = {
+  table: 'texts',
+  fields: {
+    id: { type: 'integer', primaryKey: true, autoIncrement: true },
+    field_name: { type: 'string', notNull: true },
+    value: { type: 'text', notNull: true },
+  },
+*/
+
+
+// Define your schema using Drizzle ORM's helpers
+export const textSchema = pgTable('texts', {
+  id: serial('id').primaryKey(),
+  field_name: varchar('field_name', { length: 255 }).notNull(),
+  value: text('value').notNull(),
+});
+
+//export type InsertPost = typeof textSchema.$inferInsert;
+//export type SelectPost = typeof textSchema.$inferSelect;
+
