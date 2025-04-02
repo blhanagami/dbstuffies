@@ -1,4 +1,4 @@
-import { db } from "~/server/db";  // Import your Drizzle instance
+/*import { db } from "~/server/db";  // Import your Drizzle instance
 import { posts } from '~/server/db/schema';
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -37,3 +37,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to upload text" }, { status: 500 });
   }
 }
+  
+  */

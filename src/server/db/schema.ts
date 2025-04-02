@@ -25,17 +25,12 @@ export const posts = createTable(
   "post",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    title: varchar("title", { length: 256 }).notNull(),
     content: varchar("content", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
   },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.content),
-  })
 );
 
 /*export const textSchema = {
@@ -49,12 +44,6 @@ export const posts = createTable(
 
 
 // Define your schema using Drizzle ORM's helpers
-export const textSchema = pgTable('texts', {
-  id: serial('id').primaryKey(),
-  field_name: varchar('field_name', { length: 255 }).notNull(),
-  value: text('value').notNull(),
-});
-
 //export type InsertPost = typeof textSchema.$inferInsert;
 //export type SelectPost = typeof textSchema.$inferSelect;
 
