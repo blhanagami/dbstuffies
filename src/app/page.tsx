@@ -4,8 +4,8 @@ import uploadData from "./api/upload-stuff/upload";
 import { useRouter } from "next/navigation";
 
 export default function UploadForm() {
-  const [title, setTitle] = useState("Type a title here");
-  const [content, setContent] = useState("Type some content here");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const router = useRouter();
 
   useEffect(() => {
