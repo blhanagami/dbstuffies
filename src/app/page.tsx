@@ -37,5 +37,6 @@ export default function UploadForm() {
       />
       <button type="submit">Upload</button>
     </form>
+
   );
 }
