@@ -17,7 +17,7 @@ export default function UploadForm() {
     e.preventDefault();
     const result = await uploadData(title, content);
     console.log(result); // Handle the result as needed
-    router.push("/"); // Redirect to the home page after submission
+    router.push("/"); // Redirect to the home page after submission, not needed but good to have as example
   };
 
   return (
